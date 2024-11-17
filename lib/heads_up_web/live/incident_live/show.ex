@@ -8,7 +8,7 @@ defmodule HeadsUpWeb.IncidentLive.Show do
   end
 
   def handle_params(%{"id" => id}, _uri, socket) do
-    incident = HeadsUp.Incidents.get_incident(id)
+    incident = HeadsUp.Incidents.get_incident!(id)
 
     socket =
       socket

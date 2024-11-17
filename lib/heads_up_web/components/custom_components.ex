@@ -1,11 +1,12 @@
 defmodule HeadsUpWeb.CustomComponents do
   use HeadsUpWeb, :html
 
-  attr :incident, HeadsUp.Incident, required: true
+  attr :incident, HeadsUp.Incidents.Incident, required: true
+  attr :id, :string, required: true
 
   def incident_card(assigns) do
     ~H"""
-    <.link navigate={~p"/incidents/#{@incident}"}>
+    <.link navigate={~p"/incidents/#{@incident}"} id={@id}>
       <div class="card">
         <img src={@incident.image_path} />
         <h2><%= @incident.name %></h2>
