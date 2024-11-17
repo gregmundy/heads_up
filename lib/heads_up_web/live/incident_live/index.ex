@@ -50,14 +50,23 @@ defmodule HeadsUpWeb.IncidentLive.Index do
   def filter_form(assigns) do
     ~H"""
     <.form for={@form} id="filter-form" phx-change="filter">
-      <.input field={@form[:q]} placeholder="Search..." autocomplete="off" />
+      <.input field={@form[:q]} placeholder="Search..." autocomplete="off" phx-debounce="500" />
       <.input
         type="select"
         field={@form[:status]}
         prompt="Status"
         options={Ecto.Enum.values(Incidents.Incident, :status)}
       />
-      <.input type="select" field={@form[:sort_by]} prompt="Sort By" options={[:name, :priority]} />
+      <.input
+        type="select"
+        field={@form[:sort_by]}
+        prompt="Sort By"
+        options={[
+          Name: "name",
+          "Priority: Low to High": "priority_asc",
+          "Priority: High to Low": "priority_desc"
+        ]}
+      />
     </.form>
     """
   end
