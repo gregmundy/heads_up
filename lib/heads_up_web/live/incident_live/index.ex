@@ -4,10 +4,10 @@ defmodule HeadsUpWeb.IncidentLive.Index do
   import HeadsUpWeb.CustomComponents
 
   def mount(_params, _session, socket) do
-    socket =
-      socket
-      |> stream(:incidents, Incidents.list_incidents())
-      |> assign(:form, to_form(%{}))
+    # socket =
+    #   socket
+    #   |> stream(:incidents, Incidents.list_incidents())
+    #   |> assign(:form, to_form(%{}))
 
     # IO.inspect(socket.assigns.streams.incidents, label: "MOUNT")
 
@@ -18,6 +18,15 @@ defmodule HeadsUpWeb.IncidentLive.Index do
     #   end)
 
     {:ok, socket}
+  end
+
+  def handle_params(params, _uri, socket) do
+    socket =
+      socket
+      |> stream(:incidents, Incidents.filter_incidents(params), reset: true)
+      |> assign(:form, to_form(params))
+
+    {:noreply, socket}
   end
 
   def render(assigns) do
@@ -67,15 +76,18 @@ defmodule HeadsUpWeb.IncidentLive.Index do
           "Priority: High to Low": "priority_desc"
         ]}
       />
+      <.link patch={~p"/incidents"}>Reset</.link>
     </.form>
     """
   end
 
   def handle_event("filter", params, socket) do
-    socket =
-      socket
-      |> assign(:form, to_form(params))
-      |> stream(:incidents, Incidents.filter_incidents(params), reset: true)
+    params =
+      params
+      |> Map.take(~w(q status sort_by))
+      |> Map.reject(fn {_, v} -> v == "" end)
+
+    socket = push_patch(socket, to: ~p"/incidents?#{params}")
 
     {:noreply, socket}
   end
