@@ -8,7 +8,7 @@ defmodule HeadsUpWeb.IncidentLive.Show do
   end
 
   def handle_params(%{"id" => id}, _uri, socket) do
-    incident = HeadsUp.Incidents.get_incident!(id)
+    incident = HeadsUp.Incidents.get_incident_with_category!(id)
 
     socket =
       socket
@@ -30,7 +30,10 @@ defmodule HeadsUpWeb.IncidentLive.Show do
         <section>
           <.badge status={@incident.status} />
           <header>
-            <h2><%= @incident.name %></h2>
+            <div>
+              <h2><%= @incident.name %></h2>
+              <h3>{@incident.category.name}</h3>
+            </div>
             <div class="priority">
               <%= @incident.priority %>
             </div>

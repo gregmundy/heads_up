@@ -14,6 +14,7 @@ defmodule HeadsUp.Incidents do
     |> with_status(filter["status"])
     |> search_by(filter["q"])
     |> sort_by(filter["sort_by"])
+    |> preload(:category)
     |> Repo.all()
   end
 
@@ -21,8 +22,14 @@ defmodule HeadsUp.Incidents do
     Repo.get!(Incident, id)
   end
 
+  def get_incident_with_category!(id) do
+    Repo.get!(Incident, id)
+    |> Repo.preload(:category)
+  end
+
   def urgent_incidents(incident) do
     :timer.sleep(2000)
+
     Incident
     |> where([i], i.id != ^incident.id)
     |> where(status: :pending)

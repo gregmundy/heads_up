@@ -8,8 +8,11 @@ defmodule HeadsUpWeb.CustomComponents do
     ~H"""
     <.link navigate={~p"/incidents/#{@incident}"} id={@id}>
       <div class="card">
+        <div class="category">
+          {@incident.category.name}
+        </div>
         <img src={@incident.image_path} />
-        <h2><%= @incident.name %></h2>
+        <h2>{@incident.name}</h2>
         <div class="details">
           <.badge status={@incident.status} />
           <div class="priority">
