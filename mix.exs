@@ -32,6 +32,7 @@ defmodule HeadsUp.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:bcrypt_elixir, "~> 3.0"},
       # {:phoenix, github: "phoenixframework/phoenix", ref: "bd589f1", override: true},
       {:phoenix, "~> 1.7.18"},
       {:phoenix_ecto, "~> 4.5"},
