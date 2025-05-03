@@ -49,6 +49,7 @@ defmodule HeadsUpWeb.Router do
 
     get "/incidents", IncidentController, :index
     get "/incidents/:id", IncidentController, :show
+    get "/categories/:id", CategoryController, :show
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
