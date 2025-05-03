@@ -1,9 +1,14 @@
 defmodule HeadsUpWeb.IncidentLive.Index do
   use HeadsUpWeb, :live_view
   alias HeadsUp.Incidents
+  alias HeadsUp.Categories
   import HeadsUpWeb.CustomComponents
 
   def mount(_params, _session, socket) do
+    socket =
+      socket
+      |> assign(:category_options, Categories.category_names_and_slugs())
+
     # socket =
     #   socket
     #   |> stream(:incidents, Incidents.list_incidents())
@@ -42,7 +47,7 @@ defmodule HeadsUpWeb.IncidentLive.Index do
     </.headline>
 
     <div class="incident-index">
-      <.filter_form form={@form} />
+      <.filter_form form={@form} category_options={@category_options} />
       <div class="incidents" id="incidents" phx-update="stream">
         <.incident_card
           :for={{dom_id, incident} <- @streams.incidents}
@@ -55,7 +60,7 @@ defmodule HeadsUpWeb.IncidentLive.Index do
   end
 
   attr :form, :map, required: true
-
+  attr :category_options, :list, required: true
   def filter_form(assigns) do
     ~H"""
     <.form for={@form} id="filter-form" phx-change="filter">
@@ -73,9 +78,18 @@ defmodule HeadsUpWeb.IncidentLive.Index do
         options={[
           Name: "name",
           "Priority: Low to High": "priority_asc",
-          "Priority: High to Low": "priority_desc"
+          "Priority: High to Low": "priority_desc",
+          Category: "category"
         ]}
       />
+
+      <.input
+        type="select"
+        field={@form[:category]}
+        prompt="Category"
+        options={@category_options}
+      />
+
       <.link patch={~p"/incidents"}>Reset</.link>
     </.form>
     """
@@ -84,7 +98,7 @@ defmodule HeadsUpWeb.IncidentLive.Index do
   def handle_event("filter", params, socket) do
     params =
       params
-      |> Map.take(~w(q status sort_by))
+      |> Map.take(~w(q status sort_by category))
       |> Map.reject(fn {_, v} -> v == "" end)
 
     socket = push_patch(socket, to: ~p"/incidents?#{params}")

@@ -12,6 +12,7 @@ defmodule HeadsUp.Incidents do
 
     Incident
     |> with_status(filter["status"])
+    |> with_category(filter["category"])
     |> search_by(filter["q"])
     |> sort_by(filter["sort_by"])
     |> preload(:category)
@@ -46,6 +47,16 @@ defmodule HeadsUp.Incidents do
     where(query, [i], ilike(i.name, ^"%#{q}%"))
   end
 
+  defp with_category(query, slug) when slug in ["", nil] do
+    query
+  end
+
+  defp with_category(query, slug) do
+    from i in query,
+      join: c in assoc(i, :category),
+      where: c.slug == ^slug
+  end
+
   defp with_status(query, status) when status in ~w(pending resolved canceled) do
     where(query, status: ^status)
   end
@@ -66,7 +77,13 @@ defmodule HeadsUp.Incidents do
     order_by(query, desc: :priority)
   end
 
+  defp sort_by(query, "category") do
+    from i in query,
+      join: c in assoc(i, :category),
+      order_by: c.name
+  end
+
   defp sort_by(query, _) do
-    query
+    order_by(query, desc: :priority)
   end
 end

@@ -26,6 +26,12 @@ defmodule HeadsUp.Categories do
     Repo.all(query)
   end
 
+  def category_names_and_slugs do
+    query = from c in Category, order_by: :name, select: {c.name, c.slug}
+    Repo.all(query)
+  end
+
+
   @doc """
   Gets a single category.
 
