@@ -15,6 +15,11 @@ defmodule HeadsUpWeb.Api.IncidentJSON do
     }
   end
 
+  def error(%{changeset: changeset}) do
+    errors = Ecto.Changeset.traverse_errors(changeset, fn {msg, _opts} -> msg end)
+    %{errors: errors}
+  end
+
   defp data(incident) do
     %{
       id: incident.id,
