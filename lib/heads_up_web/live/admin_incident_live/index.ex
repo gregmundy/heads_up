@@ -4,6 +4,8 @@ defmodule HeadsUpWeb.AdminIncidentLive.Index do
 
   alias HeadsUp.Admin
 
+
+
   def mount(_params, _session, socket) do
     socket =
       socket
